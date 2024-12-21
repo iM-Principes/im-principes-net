@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  node1:
+    image: hyperledger/besu:latest
+    container_name: node1
+    volumes:
+      - ${GENESIS_FILE}:/config/genesis.json
+      - ${NODE1_DATA_PATH}:/data
+    command: >
+      --data-path=/data
+      --genesis-file=/config/genesis.json
+      --rpc-http-enabled
+      --rpc-http-api=${RPC_HTTP_API}
+      --host-allowlist=${HOST_ALLOWLIST}
+      --rpc-http-cors-origins=${RPC_HTTP_CORS_ORIGINS}
+      --profile=${PROFILE}
+    networks:
+      - besu_network
+    ports:
+      - "${NODE1_RPC_PORT}:${NODE1_RPC_PORT}"
+      - "${P2P_PORT_NODE1}:${P2P_PORT_NODE1}"
+
+  node2:
+    image: hyperledger/besu:latest
+    container_name: node2
+    volumes:
+      - ${GENESIS_FILE}:/config/genesis.json
+      - ${NODE2_DATA_PATH}:/data
+    command: >
+      --data-path=/data
+      --genesis-file=/config/genesis.json
+      --bootnodes=${BOOTNODE_ENODE}:${P2P_PORT_NODE1}
+      --p2p-port=${P2P_PORT_NODE2}
+      --rpc-http-enabled
+      --rpc-http-api=${RPC_HTTP_API}
+      --host-allowlist=${HOST_ALLOWLIST}
+      --rpc-http-cors-origins=${RPC_HTTP_CORS_ORIGINS}
+      --rpc-http-port=${NODE2_RPC_PORT}
+      --profile=${PROFILE}
+    networks:
+      - besu_network
+    ports:
+      - "${NODE2_RPC_PORT}:${NODE2_RPC_PORT}"
+      - "${P2P_PORT_NODE2}:${P2P_PORT_NODE2}"
+
+  node3:
+    image: hyperledger/besu:latest
+    container_name: node3
+    volumes:
+      - ${GENESIS_FILE}:/config/genesis.json
+      - ${NODE3_DATA_PATH}:/data
+    command: >
+      --data-path=/data
+      --genesis-file=/config/genesis.json
+      --bootnodes=${BOOTNODE_ENODE}:${P2P_PORT_NODE1}
+      --p2p-port=${P2P_PORT_NODE3}
+      --rpc-http-enabled
+      --rpc-http-api=${RPC_HTTP_API}
+      --host-allowlist=${HOST_ALLOWLIST}
+      --rpc-http-cors-origins=${RPC_HTTP_CORS_ORIGINS}
+      --rpc-http-port=${NODE3_RPC_PORT}
+      --profile=${PROFILE}
+    networks:
+      - besu_network
+    ports:
+      - "${NODE3_RPC_PORT}:${NODE3_RPC_PORT}"
+      - "${P2P_PORT_NODE3}:${P2P_PORT_NODE3}"
+
+  node4:
+    image: hyperledger/besu:latest
+    container_name: node4
+    volumes:
+      - ${GENESIS_FILE}:/config/genesis.json
+      - ${NODE4_DATA_PATH}:/data
+    command: >
+      --data-path=/data
+      --genesis-file=/config/genesis.json
+      --bootnodes=${BOOTNODE_ENODE}:${P2P_PORT_NODE1}
+      --p2p-port=${P2P_PORT_NODE4}
+      --rpc-http-enabled
+      --rpc-http-api=${RPC_HTTP_API}
+      --host-allowlist=${HOST_ALLOWLIST}
+      --rpc-http-cors-origins=${RPC_HTTP_CORS_ORIGINS}
+      --rpc-http-port=${NODE4_RPC_PORT}
+      --profile=${PROFILE}
+    networks:
+      - besu_network
+    ports:
+      - "${NODE4_RPC_PORT}:${NODE4_RPC_PORT}"
+      - "${P2P_PORT_NODE4}:${P2P_PORT_NODE4}"
+
+networks:
+  besu_network:
+    driver: bridge
